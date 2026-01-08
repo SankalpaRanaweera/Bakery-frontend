@@ -1,5 +1,5 @@
 // src/pages/Customers.tsx - COMPLETE FULL CODE
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { customersService, Customer } from '../services/customers';
 import { salespeopleService, Salesperson } from '../services/salespeople';
 import toast from 'react-hot-toast';
@@ -21,25 +21,18 @@ const Customers: React.FC = () => {
     location: '',
   });
 
-  useEffect(() => {
-    fetchSalespeople();
-    fetchCustomers();
-  }, []);
+  
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [filterSalesperson]);
-
-  const fetchSalespeople = async () => {
+  const fetchSalespeople = useCallback(async () => {
     try {
       const response = await salespeopleService.getAll();
       setSalespeople(response.data);
     } catch (error) {
       toast.error('Failed to fetch salespeople');
     }
-  };
+  }, []);
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       setLoading(true);
       const response = await customersService.getAll(filterSalesperson || undefined);
@@ -49,7 +42,16 @@ const Customers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterSalesperson]);
+
+  useEffect(() => {
+    fetchSalespeople();
+    fetchCustomers();
+  }, [fetchSalespeople, fetchCustomers]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

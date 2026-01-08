@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { billsService, Bill } from '../services/bills';
 import { customersService, Customer } from '../services/customers';
 import toast from 'react-hot-toast';
@@ -20,12 +20,9 @@ const Bills: React.FC = () => {
 
   const [paymentAmount, setPaymentAmount] = useState('');
 
-  useEffect(() => {
-    fetchBills();
-    fetchCustomers();
-  }, [filterStatus]);
+  
 
-  const fetchBills = async () => {
+  const fetchBills = useCallback(async () => {
     try {
       setLoading(true);
       const params = filterStatus ? { payment_status: filterStatus } : {};
@@ -36,16 +33,21 @@ const Bills: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]);
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       const response = await customersService.getAll();
       setCustomers(response.data);
     } catch (error) {
       toast.error('Failed to fetch customers');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBills();
+    fetchCustomers();
+  }, [fetchBills, fetchCustomers]);
 
   const handleGenerateBill = async (e: React.FormEvent) => {
     e.preventDefault();
