@@ -14,7 +14,7 @@ export interface User {
 
 export const authService = {
   async login(credentials: LoginCredentials) {
-    const response = await api.post('http://127.0.0.1:8000/api/login', credentials);
+    const response = await api.post(import.meta.env.VITE_API_URL + '/login', credentials);
     const { token, user } = response.data;
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
