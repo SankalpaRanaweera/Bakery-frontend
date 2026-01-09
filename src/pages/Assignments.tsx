@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { assignmentsService, Assignment } from '../services/assignments';
 import { salespeopleService, Salesperson } from '../services/salespeople';
 import { itemsService, BakeryItem } from '../services/items';
@@ -14,27 +14,36 @@ const Assignments: React.FC = () => {
   const [existingAssignments, setExistingAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(false);
 
-  
+  useEffect(() => {
+    fetchSalespeople();
+    fetchItems();
+  }, []);
 
-  const fetchSalespeople = useCallback(async () => {
+  useEffect(() => {
+    if (selectedSalesperson && selectedDate) {
+      fetchExistingAssignments();
+    }
+  }, [selectedSalesperson, selectedDate]);
+
+  const fetchSalespeople = async () => {
     try {
       const response = await salespeopleService.getAll();
       setSalespeople(response.data);
     } catch (error) {
       toast.error('Failed to fetch salespeople');
     }
-  }, []);
+  };
 
-  const fetchItems = useCallback(async () => {
+  const fetchItems = async () => {
     try {
       const response = await itemsService.getAll();
       setItems(response.data);
     } catch (error) {
       toast.error('Failed to fetch items');
     }
-  }, []);
+  };
 
-  const fetchExistingAssignments = useCallback(async () => {
+  const fetchExistingAssignments = async () => {
     if (!selectedSalesperson) return;
     try {
       setLoading(true);
@@ -45,18 +54,7 @@ const Assignments: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedSalesperson, selectedDate]);
-
-  useEffect(() => {
-    fetchSalespeople();
-    fetchItems();
-  }, [fetchSalespeople, fetchItems]);
-
-  useEffect(() => {
-    if (selectedSalesperson && selectedDate) {
-      fetchExistingAssignments();
-    }
-  }, [selectedSalesperson, selectedDate, fetchExistingAssignments]);
+  };
 
   const addItem = () => {
     setAssignmentItems([...assignmentItems, { item_id: 0, quantity_assigned: 0 }]);

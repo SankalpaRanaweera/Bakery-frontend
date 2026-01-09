@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { reportsService } from '../services/reports';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -10,9 +10,15 @@ const Reports: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-  
+  useEffect(() => {
+    if (activeTab === 'daily') {
+      fetchDailySales();
+    } else {
+      fetchUnpaidDebts();
+    }
+  }, [activeTab, selectedDate]);
 
-  const fetchDailySales = useCallback(async () => {
+  const fetchDailySales = async () => {
     try {
       setLoading(true);
       const response = await reportsService.getDailySales(selectedDate);
@@ -22,9 +28,9 @@ const Reports: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedDate]);
+  };
 
-  const fetchUnpaidDebts = useCallback(async () => {
+  const fetchUnpaidDebts = async () => {
     try {
       setLoading(true);
       const response = await reportsService.getUnpaidDebts();
@@ -34,15 +40,7 @@ const Reports: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    if (activeTab === 'daily') {
-      fetchDailySales();
-    } else {
-      fetchUnpaidDebts();
-    }
-  }, [activeTab, fetchDailySales, fetchUnpaidDebts]);
+  };
 
   return (
     <div className="space-y-6">
