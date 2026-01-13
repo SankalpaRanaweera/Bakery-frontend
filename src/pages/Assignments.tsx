@@ -27,8 +27,8 @@ const Assignments: React.FC = () => {
 
   const fetchSalespeople = async () => {
     try {
-      const response = await salespeopleService.getAll();
-      setSalespeople(response.data);
+      const data = await salespeopleService.getAll();
+      setSalespeople(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch salespeople');
     }
@@ -36,8 +36,8 @@ const Assignments: React.FC = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await itemsService.getAll();
-      setItems(response.data);
+      const data = await itemsService.getAll();
+      setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch items');
     }

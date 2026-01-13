@@ -29,8 +29,8 @@ const Bills: React.FC = () => {
     try {
       setLoading(true);
       const params = filterStatus ? { payment_status: filterStatus } : {};
-      const response = await billsService.getAll(params);
-      setBills(response.data);
+      const data = await billsService.getAll(params);
+      setBills(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch bills');
     } finally {
@@ -40,8 +40,8 @@ const Bills: React.FC = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await customersService.getAll();
-      setCustomers(response.data);
+      const data = await customersService.getAll();
+      setCustomers(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch customers');
     }

@@ -32,8 +32,8 @@ const Customers: React.FC = () => {
 
   const fetchSalespeople = async () => {
     try {
-      const response = await salespeopleService.getAll();
-      setSalespeople(response.data);
+      const data = await salespeopleService.getAll();
+      setSalespeople(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch salespeople');
     }
@@ -42,8 +42,8 @@ const Customers: React.FC = () => {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const response = await customersService.getAll(filterSalesperson || undefined);
-      setCustomers(response.data);
+      const data = await customersService.getAll(filterSalesperson || undefined);
+      setCustomers(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch customers');
     } finally {

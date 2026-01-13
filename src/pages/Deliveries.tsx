@@ -32,8 +32,8 @@ const Deliveries: React.FC = () => {
   const fetchDeliveries = async () => {
     try {
       setLoading(true);
-      const response = await deliveriesService.getAll();
-      setDeliveries(response.data);
+      const data = await deliveriesService.getAll();
+      setDeliveries(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch deliveries');
     } finally {
@@ -43,8 +43,8 @@ const Deliveries: React.FC = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await customersService.getAll();
-      setCustomers(response.data);
+      const data = await customersService.getAll();
+      setCustomers(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch customers');
     }
@@ -52,8 +52,8 @@ const Deliveries: React.FC = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await itemsService.getAll();
-      setItems(response.data);
+      const data = await itemsService.getAll();
+      setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch items');
     }

@@ -21,8 +21,8 @@ const Salespeople: React.FC = () => {
   const fetchSalespeople = async () => {
     try {
       setLoading(true);
-      const response = await salespeopleService.getAll();
-      setSalespeople(response.data);
+      const data = await salespeopleService.getAll();
+      setSalespeople(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch salespeople');
     } finally {

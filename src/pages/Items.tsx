@@ -22,8 +22,8 @@ const Items: React.FC = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await itemsService.getAll();
-      setItems(response.data);
+      const data = await itemsService.getAll();
+      setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error('Failed to fetch items');
     } finally {
